@@ -197,28 +197,31 @@ public class HRRN {
 
             Process_Info curPs = readyQueue.peek();
 
-            if (curPs != null && curPs.checkFinish()) { // 현재 프로세스가 수행을 완료했을 경우
+            if (curPs.checkFinish()) { // 현재 프로세스가 수행을 완료했을 경우
 
                 System.out.printf(">>>> %d초에 수행 완료\t\t", real_time);
                 System.out.printf("PID : %2d\tArrive Time: %2d\t,Service Time: %2d\t,End Time: %2d\t",
-                        curPs.getProcessID(), curPs.getArriveTime(), curPs.getServiceTime(), real_time-1);
+                        curPs.getProcessID(), curPs.getArriveTime(), curPs.getServiceTime(), real_time);
                 System.out.println();
 
                 readyQueue.remove(curPs);
                 num_Process--;
 
             }
-            else {
-                Process_Info nextPs = readyQueue.peek();
 
-                for (var ps : readyQueue) {
-                    if (ps.calc_RatioTime(real_time) < nextPs.calc_RatioTime(real_time)) {
-                        nextPs = ps;
-                    }
-                    curPs = nextPs;
+            Process_Info nextPs = readyQueue.peek();
+
+
+            //curPs.ExecTime++;
+            for (var ps : readyQueue) {
+                if (ps.calc_RatioTime(real_time) > nextPs.calc_RatioTime(real_time)) {
+                    nextPs = ps;
                 }
-                curPs.ExecTime++;
+                curPs = nextPs;
             }
+            //curPs.ExecTime++;
+
+
 
 
 
