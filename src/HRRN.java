@@ -201,6 +201,7 @@ public class HRRN {
         Process_Info nextPs2 = null;
 
         // 본격적으로 readyQueue에서 Process를 스케줄링을 진행할 부분
+        //curPs = processQueue.peek();
 
         Loop : while(true) { // 이 반복문에 Loop 이라는 Label을 지정함
 
@@ -211,55 +212,55 @@ public class HRRN {
             ++real_time; // 시간 1 증가(선 증가, -1로 기본 세팅을 했기 때문)
 
 
-            Input: for(var _obs: processQueue) { // 이 반복문에 Input 이라는 Label을 지정
+            for(var _obs: processQueue) { // 이 반복문에 Input 이라는 Label을 지정
                 if(_obs.getArriveTime() == real_time) {
                     isNewProcessArrived = true;
                     readyQueue.add(_obs);
                     processQueue.poll();
                     System.out.println(real_time + "초에 ReadyQueue에 프로세스 " + _obs.getProcessID() + "번 추가");
-                    break Input;
+                    break;
                 }
             }
 
-
-            if(curPs != null) {
+            if(curPs != null && !curPs.checkFinish()) { // 현재 실행되고 있는 프로세스가 있다면
                 ++curPs.ExecTime;
-                ++count;
+                count++;
                 --curPs.left_service_time;
-                System.out.println(">>>> 프로세스 " + curPs.getProcessID() + "번 " + count + "회 실행중");
-                for(var _process: readyQueue) { _process.calc_waitTime(real_time); }
 
-                if(curPs.checkFinish()) {
 
-                    System.out.printf(">>>> %d초에 수행 완료\t\t", real_time);
-                    curPs.setReturnTime(real_time);
-                    // 정규화된 반환 시간 = 반환시간/실행시간
-                    System.out.printf("PID : %2d\tArrive Time: %2d\t,Service Time: %2d\tReturn Time: %2d\t\tNormalized Return Time: %.2f",
-                            curPs.getProcessID(), curPs.getArriveTime(), curPs.getServiceTime(), real_time, (double)curPs.getReturnTime()/curPs.getServiceTime());
-                    System.out.println();
+                //System.out.println(">>>> 프로세스 " + curPs.getProcessID() + "번 " + count + "회 실행중");
+            }
 
-                    readyQueue.remove(curPs);
-                    --num_Process;
-                    curPs = null;
+            if(curPs != null && curPs.checkFinish()) {
 
-                    count = 0;
-
+                for (var _process : readyQueue) {
+                    _process.calc_waitTime(real_time);
                 }
 
-                //return;
+                System.out.printf(">>>> %d초에 수행 완료\t\t", real_time);
+                curPs.setReturnTime(real_time);
+                // 정규화된 반환 시간 = 반환시간/실행시간
+                System.out.printf("PID : %2d\tArrive Time: %2d\t,Service Time: %2d\tReturn Time: %2d\t\tNormalized Return Time: %.2f",
+                        curPs.getProcessID(), curPs.getArriveTime(), curPs.getServiceTime(), real_time, (double) curPs.getReturnTime() / curPs.getServiceTime());
+                System.out.println();
+
+                readyQueue.remove(curPs);
+                --num_Process;
+                curPs = null;
+                count = 0;
+
             }
 
             nextPs = readyQueue.peek();
 
+
             for (var obs : readyQueue) {
+                //System.out.printf(">>>>>>>>>>>>>>>>> Time: %d\tRatio(응답 비율) 계산 -----> obs PID : %d \t\tobs Ratio : %.2f \t\tnextPS PID : %d \t\tnextPs Ratio : %.2f\n", real_time,obs.getProcessID(),obs.calc_RatioTime(real_time) , nextPs.getProcessID(),nextPs.calc_RatioTime(real_time) );
                 if (obs.calc_RatioTime(real_time) > nextPs.calc_RatioTime(real_time)) {
-                    System.out.printf(">>>> Ratio(응답 비율) 계산 -----> obs Ratio : %.2f \t\tnextPs Ratio : %.2f\n", obs.calc_RatioTime(real_time) , nextPs.calc_RatioTime(real_time) );
                     nextPs = obs;
                 }
             }
             curPs = nextPs;
-
-
 
 
         }
