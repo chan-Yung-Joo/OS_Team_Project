@@ -263,7 +263,7 @@ public class HRRN {
 
 
             for (var obs : readyQueue) { // readyQueue에 있는 모든 프로세스를 순회하면서
-                //System.out.printf(">>>>>>>>>>>>>>>>> Time: %d\tRatio(응답 비율) 계산 -----> obs PID : %d \t\tobs Ratio : %.2f \t\tnextPS PID : %d \t\tnextPs Ratio : %.2f\n", real_time,obs.getProcessID(),obs.calc_RatioTime(real_time) , nextPs.getProcessID(),nextPs.calc_RatioTime(real_time) );
+                
 
                 // readyQueue에 있는 다른 프로세스와 nextPS 프로세스의 응답비율을 계산하여
                 if (obs.calc_RatioTime(real_time) > nextPs.calc_RatioTime(real_time)) { // nextPs 프로세스 보다 큰 것이 있다면
