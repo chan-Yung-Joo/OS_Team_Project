@@ -223,8 +223,6 @@ public class HRRN {
                 _obs = temp[i]; // 객체 배열을 하나씩 순회하며 _obs 클래스 변수에 대입
                 if(_obs.getArriveTime() == real_time) { // _obs 객체의 도착 시간과 현재 시간이 동일하면
                     readyQueue.add(_obs); // readyQueue에 추가
-                    // 추가 됬는지 확인하는 확인용 출력
-                    //System.out.println(real_time + "초에 ReadyQueue에 프로세스 " + _obs.getProcessID() + "번 추가");
                 }
 
             }
@@ -264,7 +262,6 @@ public class HRRN {
 
             for (var obs : readyQueue) { // readyQueue에 있는 모든 프로세스를 순회하면서
                 
-
                 // readyQueue에 있는 다른 프로세스와 nextPS 프로세스의 응답비율을 계산하여
                 if (obs.calc_RatioTime(real_time) > nextPs.calc_RatioTime(real_time)) { // nextPs 프로세스 보다 큰 것이 있다면
                     nextPs = obs; // 해당하는 프로세스를 nextPs로 셋팅
